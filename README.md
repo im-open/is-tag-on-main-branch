@@ -30,7 +30,32 @@ If you are working on something other than the default branch, it may be best to
 
 ```yml
 jobs:
-  validate-ref-to-deploy:
+  # Assumes the default branch is main and that the workflow is being run from the main branch
+  validate-tag-to-deploy-default-branch:
+    runs-on: [ubuntu-20.04]
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Check if tag is reachable by main
+        uses: im-open/is-tag-reachable-from-default-branch@v1.0.0
+        with:
+          tag: 'latest'
+  
+  # Assumes the default branch is main and that the workflow is being run from a non-default branch
+  validate-tag-to-deploy-from-non-default-workflow-branch:
+    runs-on: [ubuntu-20.04]
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Check if tag is reachable by main
+        uses: im-open/is-tag-reachable-from-default-branch@v1.0.0
+        with:
+          tag: 'latest'
+          ref: ${{ github.ref }}
+
+  # Specifies the default branch is master, errors are handled outside the workflow and that
+  # the action should return to v2.0.12 once it has finished checking
+  validate-tag-to-deploy-advanced:
     runs-on: [ubuntu-20.04]
     steps:
       - uses: actions/checkout@v2
@@ -54,7 +79,7 @@ jobs:
 
 
   deploy-to-prod:
-    needs: [validate-ref-to-deploy]
+    needs: [validate-tag-to-deploy-advanced]
     runs-on: [ubuntu-20.04]
     steps:
       - uses: actions/checkout@v2
