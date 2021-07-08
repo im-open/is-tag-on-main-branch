@@ -1,22 +1,70 @@
-name: 'Composite Run Steps Action Template'
+name: 'is-tag-reachable-from-default-branch'
 
-description: 'Add description here'
+description: 'Determines whether a tag is reachable from the default branch'
 
 inputs:
-  input-1:
-    description: 'Add a description here'
+  tag:
+    description: 'The tag to be checked'
     required: true
+  default-branch:
+    description: 'The default branch for the repository.  Defaults to main.'
+    required: true
+    default: 'main'
+  ref:
+    description: 'The default branch for the repository.  Defaults to main.'
+    required: false
+  error-if-not-reachable:
+    description: 'Throw an error if the tag is not reachable from the default branch'
+    required: true
+    default: 'true'
 
 outputs:
-  output-1:
-    description: 'Add description here'
-    value: '${{ steps.step_1.outputs.world }}'
+  reachable:
+    description: 'Whether the tag is reachable from the default branch.'
+    value: '${{ steps.check-tag.outputs.reachable }}'
 
 runs:
   using: 'composite'
   steps:
-    - name: Step 1
-      id: step_1
+    - name: Check if tag is reachable from the default branch
+      id: check-tag
       shell: bash
       run: |
-        echo "::set-output name=hello::world"
+        errorIfNotReachable=${{ inputs.error-if-not-reachable }}
+        tag=${{ inputs.tag }}
+        defaultBranch=${{ inputs.default-branch }}
+        ref=${{ inputs.ref }}
+
+        echo "Checking tag: $tag"
+        echo "ErrorIfNotReachable: $errorIfNotReachable"
+
+        if [ $(echo ${#ref}) -gt 0 ]; then
+          echo "::group::Switching to the default branch"
+          git checkout $defaultBranch -f
+          echo "::endgroup::"
+        fi
+
+        mergedTags=$(git tag --merged)
+
+        echo "Checking tag: $tag"
+        echo "::group::The repository contains the following tags which are reachable from $defaultBranch"
+        printf '%s\n' "${mergedTags[@]}"
+        echo "::endgroup::"
+
+        if [ $(echo ${#ref}) -gt 0 ]; then
+          echo "::group::Switching back to $ref"
+          git checkout $ref -f
+          echo "::endgroup::"
+        fi       
+
+        if printf '%s\n' "${mergedTags[@]}" | grep -q -w $tag ; 
+        then
+          echo "The tag appears in the list of reachable tags"
+          echo "::set-output name=reachable::true"
+        else
+          echo "::error::The tag does not appear to be reachable by from $defaultBranch."
+          echo "::set-output name=reachable::false"
+          if [ "$errorIfNotReachable" == "true" ]; then
+            exit 1
+          fi
+        fi
