@@ -3,7 +3,9 @@
 This action takes in a tag and determines if it is reachable from the default branch.  This action should be used in conjunction with the `actions/checkout` action where a fetch-depth has been set so the action has access to tags and history.
 
 When this executes it will:
-1. Checkout the default branch if it is not currently on it (the `ref` arg should be provided in this case)
+1. Checkout the default branch if it is not currently on it 
+   - The `ref` arg should be provided in this case, so the action knows which ref to switch back to.  
+   - The `ref` can be a branch, tag or SHA.
 2. Retrieve the list of tags that are reachable from the default branch 
 3. Check if the tag is in that list of reachable tags
 4. If the tag is not in the reachable list it will set the Exit Code to 1 unless the `error-if-not-reachable` input is set to false.  
