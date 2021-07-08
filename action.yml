@@ -52,7 +52,7 @@ runs:
         echo "::endgroup::"
 
         if [ $(echo ${#ref}) -gt 0 ]; then
-          echo "::group::Switching to back to $ref"
+          echo "::group::Switching back to $ref"
           git checkout $ref -f
           echo "::endgroup::"
         fi       
