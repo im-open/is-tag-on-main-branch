@@ -26,14 +26,20 @@ outputs:
 runs:
   using: 'composite'
   steps:
+  
+    # ${REF##*/} removes any prefixes
     - name: Check if tag is reachable from the default branch
       id: check-tag
       shell: bash
+      env:
+        GITHUB_TAG: ${{ steps.remove-prefix.outputs.result }}
+        GITHUB_DEFAULT_BRANCH: ${{ inputs.default-branch }}
+        GITHUB_REF: ${{ inputs.ref }}
       run: |
         errorIfNotReachable=${{ inputs.error-if-not-reachable }}
-        tag=${{ inputs.tag }}
-        defaultBranch=${{ inputs.default-branch }}
-        ref=${{ inputs.ref }}
+        tag=${GITHUB_TAG##*/}
+        defaultBranch=${GITHUB_DEFAULT_BRANCH##*/}
+        ref=${GITHUB_REF##*/}
 
         echo "Checking tag: $tag"
         echo "ErrorIfNotReachable: $errorIfNotReachable"
