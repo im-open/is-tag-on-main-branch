@@ -60,10 +60,10 @@ runs:
         if printf '%s\n' "${mergedTags[@]}" | grep -q -w $tag ; 
         then
           echo "The tag appears in the list of reachable tags"
-          echo "::set-output name=reachable::true"
+          echo "reachable=true" >> $GITHUB_OUTPUT
         else
           echo "::error::The tag does not appear to be reachable by from $defaultBranch."
-          echo "::set-output name=reachable::false"
+          echo "reachable=false" >> $GITHUB_OUTPUT
           if [ "$errorIfNotReachable" == "true" ]; then
             exit 1
           fi
