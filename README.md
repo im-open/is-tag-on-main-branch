@@ -51,7 +51,7 @@ jobs:
 
       - name: Check if tag is reachable by main
         # You may also reference just the major or major.minor version
-        uses: im-open/is-tag-reachable-from-default-branch@v1.1.0
+        uses: im-open/is-tag-reachable-from-default-branch@v1.1.1
         with:
           tag: 'latest'
 
@@ -62,7 +62,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Check if tag is reachable by main
-        uses: im-open/is-tag-reachable-from-default-branch@v1.1.0
+        uses: im-open/is-tag-reachable-from-default-branch@v1.1.1
         with:
           tag: 'latest'
           ref: ${{ github.ref }}
@@ -78,7 +78,7 @@ jobs:
 
       - name: Check if tag is reachable by master
         id: tag-check
-        uses: im-open/is-tag-reachable-from-default-branch@v1.1.0
+        uses: im-open/is-tag-reachable-from-default-branch@v1.1.1
         with:
           tag: 'latest'                 # The tag to check
           error-if-not-reachable: false # Don't throw an error if the tag is not reachable
