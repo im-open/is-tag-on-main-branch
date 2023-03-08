@@ -50,6 +50,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Check if tag is reachable by main
+        # You may also reference just the major or major.minor version
         uses: im-open/is-tag-reachable-from-default-branch@v1.1.0
         with:
           tag: 'latest'
