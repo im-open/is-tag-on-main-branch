@@ -1,6 +1,5 @@
-name: 'is-tag-reachable-from-default-branch'
-
-description: 'Determines whether a tag is reachable from the default branch'
+name: is-tag-reachable-from-default-branch
+description: Determines whether a tag is reachable from the default branch
 
 inputs:
   tag:
