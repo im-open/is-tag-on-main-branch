@@ -43,7 +43,9 @@ runs:
           echo "::endgroup::"
         fi
 
-        mergedTags=$(git tag --merged)
+        # Store the list of tags reachable from the default branch (--merged)
+        # and sort them by ascending version number, interpreting the tag name as a version number (--sort="version:refname")
+        mergedTags=$(git tag --list --sort="version:refname" --merged)
 
         echo "Checking tag: $tag"
         echo "::group::The repository contains the following tags which are reachable from $defaultBranch"
