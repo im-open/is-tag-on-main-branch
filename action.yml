@@ -10,7 +10,7 @@ inputs:
     required: true
     default: 'main'
   ref:
-    description: 'The default branch for the repository.  Defaults to main.'
+    description: 'Required when a `ref` arg was used with `actions/checkout` or if a non-default branch was selected when starting the workflow. Specify the same ref here so the action can return the repository to that ref.'
     required: false
   error-if-not-reachable:
     description: 'Throw an error if the tag is not reachable from the default branch'

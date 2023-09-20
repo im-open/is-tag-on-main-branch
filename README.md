@@ -1,6 +1,6 @@
 # is-tag-reachable-from-default-branch
 
-This action takes in a tag and determines if it is reachable from the default branch. This action should be used in conjunction with the `actions/checkout` action where a fetch-depth has been set so the action has access to tags and history.
+This action takes in a tag and determines if it is reachable from the default branch. This action should be used in conjunction with the `actions/checkout` action where the `fetch-depth` arg has been set so the action has access to tags and history.
 
 When this executes it will:
 
@@ -54,7 +54,7 @@ jobs:
 
       - name: Check if tag is reachable by main
         # You may also reference just the major or major.minor version
-        uses: im-open/is-tag-reachable-from-default-branch@v1.1.2
+        uses: im-open/is-tag-reachable-from-default-branch@v1.1.3
         with:
           tag: 'latest'
 
@@ -65,7 +65,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Check if tag is reachable by main
-        uses: im-open/is-tag-reachable-from-default-branch@v1.1.2
+        uses: im-open/is-tag-reachable-from-default-branch@v1.1.3
         with:
           tag: 'latest'
           ref: ${{ github.ref }}
@@ -81,7 +81,7 @@ jobs:
 
       - name: Check if tag is reachable by master
         id: tag-check
-        uses: im-open/is-tag-reachable-from-default-branch@v1.1.2
+        uses: im-open/is-tag-reachable-from-default-branch@v1.1.3
         with:
           tag: 'latest'                 # The tag to check
           error-if-not-reachable: false # Don't throw an error if the tag is not reachable
