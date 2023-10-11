@@ -173,7 +173,6 @@ jobs:
         run: |
           currentBranch=$(git rev-parse --abbrev-ref HEAD)
           ./test/assert-values-match.sh --name "current branch" --expected "${{ env.UNREACHABLE_BRANCH }}" --actual $currentBranch
-
       
       - name: '-------------------------------------------------------------------------------------------------------'
         run: echo ""
