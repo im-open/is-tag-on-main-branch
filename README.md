@@ -1,3 +1,7 @@
+# Tests
+
+Force tests to run from a fork to see what happens
+
 # is-tag-reachable-from-default-branch
 
 This action takes in a tag and determines if it is reachable from the default branch. This action should be used in conjunction with the `actions/checkout` action where the `fetch-depth` arg has been set so the action has access to tags and history.
