@@ -60,3 +60,119 @@ jobs:
       # The npm script to run to build the action.  This is typically 'npm run build' if the
       # action needs to be compiled.  For composite-run-steps actions this is typically empty.
       build-command: ''
+
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      # NOTE:  The unreachable tag has been created to be unreachable from main.  If it is removed
+      #        these tests may start to fail.
+      UNREACHABLE_BRANCH: 'unreachable-branch'
+      UNREACHABLE_TAG: 'v0.0.0'
+      REACHABLE_TAG: 'v1.1.2'
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      #--------------------------------------
+      # TAG IS REACHABLE FROM MAIN
+      #--------------------------------------
+      - name: '-------------------------------------------------------------------------------------------------------'
+        run: echo ""
+
+      - name: When a tag is reachable from main
+        # You may also reference just the major or major.minor version
+        uses: ./
+        if: always()
+        id: reachable
+        with:
+          tag: ${{ env.REACHABLE_TAG }}
+          default-branch: 'main'
+          error-if-not-reachable: true
+
+      - name: Then the outcome should be success
+        if: always()
+        run: ./test/assert-values-match.sh --name "step outcome" --expected "success" --actual "${{ steps.reachable.outcome }}"
+
+      - name: And the reachable output should be true
+        if: always()
+        run: ./test/assert-values-match.sh --name "reachable output" --expected "true" --actual "${{ steps.reachable.outputs.reachable }}"
+
+      #-----------------------------------------------------------------
+      # TAG IS UNREACHABLE FROM MAIN AND ERROR-IF-NOT-REACHABLE IS FALSE
+      #-----------------------------------------------------------------
+      - name: '-------------------------------------------------------------------------------------------------------'
+        run: echo ""
+
+      - name: When a tag is unreachable from main and error-if-not-reachable is false
+        # You may also reference just the major or major.minor version
+        uses: ./
+        if: always()
+        id: unreachable-no-error
+        with:
+          tag: ${{ env.UNREACHABLE_TAG }}
+          default-branch: 'main'
+          error-if-not-reachable: false
+
+      - name: Then the outcome should be success
+        if: always()
+        run: ./test/assert-values-match.sh --name "step outcome" --expected "success" --actual "${{ steps.unreachable-no-error.outcome }}"
+
+      - name: And the reachable output should be false
+        if: always()
+        run: ./test/assert-values-match.sh --name "reachable output" --expected "false" --actual "${{ steps.unreachable-no-error.outputs.reachable }}"
+
+      #-----------------------------------------------------------------
+      # TAG IS UNREACHABLE FROM MAIN AND ERROR-IF-NOT-REACHABLE IS TRUE
+      #-----------------------------------------------------------------
+      - name: '-------------------------------------------------------------------------------------------------------'
+        run: echo ""
+
+      - name: When a tag is unreachable from main and error-if-not-reachable is true
+        # You may also reference just the major or major.minor version
+        uses: ./
+        if: always()
+        continue-on-error: true # This is needed because we expect the step to fail.  It needs to "pass" in order for the test job to succeed.
+        id: unreachable-with-error
+        with:
+          tag: ${{ env.UNREACHABLE_TAG }}
+          default-branch: 'main'
+          error-if-not-reachable: true
+
+      - name: Then the outcome should be failure
+        if: always()
+        run: ./test/assert-values-match.sh --name "step outcome" --expected "failure" --actual "${{ steps.unreachable-with-error.outcome }}"
+
+      - name: And the reachable output should be false
+        if: always()
+        run: ./test/assert-values-match.sh --name "reachable output" --expected "false" --actual "${{ steps.unreachable-with-error.outputs.reachable }}"
+      
+      
+      #-----------------------------------------------------------------
+      # REF IS PROVIDED
+      #-----------------------------------------------------------------
+      - name: '-------------------------------------------------------------------------------------------------------'
+        run: echo ""
+
+      - name: When a ref is provided
+        # You may also reference just the major or major.minor version
+        uses: ./
+        if: always()
+        continue-on-error: true # This is needed because we expect the step to fail.  It needs to "pass" in order for the test job to succeed.
+        id: ref
+        with:
+          tag: ${{ env.REACHABLE_TAG }}
+          default-branch: 'main'
+          ref: ${{ env.UNREACHABLE_BRANCH }} # The action should switch back to this ref
+          error-if-not-reachable: true
+
+      - name: Then the action should switch back to that ref
+        if: always()
+        run: |
+          currentBranch=$(git rev-parse --abbrev-ref HEAD)
+          ./test/assert-values-match.sh --name "current branch" --expected "${{ env.UNREACHABLE_BRANCH }}" --actual $currentBranch
+      
+      - name: '-------------------------------------------------------------------------------------------------------'
+        run: echo ""

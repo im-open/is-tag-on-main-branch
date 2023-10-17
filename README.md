@@ -1,6 +1,6 @@
 # is-tag-reachable-from-default-branch
 
-This action takes in a tag and determines if it is reachable from the default branch. This action should be used in conjunction with the `actions/checkout` action where a fetch-depth has been set so the action has access to tags and history.
+This action takes in a tag and determines if it is reachable from the default branch. This action should be used in conjunction with the `actions/checkout` action where the `fetch-depth` arg has been set so the action has access to tags and history.
 
 When this executes it will:
 
@@ -24,6 +24,7 @@ If you are working on something other than the default branch, it may be best to
     - [Incrementing the Version](#incrementing-the-version)
     - [Source Code Changes](#source-code-changes)
     - [Updating the README.md](#updating-the-readmemd)
+    - [Tests](#tests)
   - [Code of Conduct](#code-of-conduct)
   - [License](#license)
 
@@ -54,7 +55,7 @@ jobs:
 
       - name: Check if tag is reachable by main
         # You may also reference just the major or major.minor version
-        uses: im-open/is-tag-reachable-from-default-branch@v1.1.2
+        uses: im-open/is-tag-reachable-from-default-branch@v1.1.3
         with:
           tag: 'latest'
 
@@ -65,7 +66,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Check if tag is reachable by main
-        uses: im-open/is-tag-reachable-from-default-branch@v1.1.2
+        uses: im-open/is-tag-reachable-from-default-branch@v1.1.3
         with:
           tag: 'latest'
           ref: ${{ github.ref }}
@@ -81,7 +82,7 @@ jobs:
 
       - name: Check if tag is reachable by master
         id: tag-check
-        uses: im-open/is-tag-reachable-from-default-branch@v1.1.2
+        uses: im-open/is-tag-reachable-from-default-branch@v1.1.3
         with:
           tag: 'latest'                 # The tag to check
           error-if-not-reachable: false # Don't throw an error if the tag is not reachable
@@ -113,6 +114,7 @@ When creating PRs, please review the following guidelines:
 - [ ] The action code does not contain sensitive information.
 - [ ] At least one of the commit messages contains the appropriate `+semver:` keywords listed under [Incrementing the Version] for major and minor increments.
 - [ ] The README.md has been updated with the latest version of the action.  See [Updating the README.md] for details.
+- [ ] Any tests in the [build-and-review-pr] workflow are passing
 
 ### Incrementing the Version
 
@@ -137,6 +139,10 @@ If a PR consists solely of non-source code changes like changes to the `README.m
 ### Updating the README.md
 
 If changes are made to the action's [source code], the [usage examples] section of this file should be updated with the next version of the action.  Each instance of this action should be updated.  This helps users know what the latest tag is without having to navigate to the Tags page of the repository.  See [Incrementing the Version] for details on how to determine what the next version will be or consult the first workflow run for the PR which will also calculate the next version.
+
+### Tests
+
+The build and review PR workflow includes tests which are linked to a status check. That status check needs to succeed before a PR is merged to the default branch.  The tests do not need special permissions, so they should succeed whether they come from a branch or a fork.
 
 ## Code of Conduct
 
