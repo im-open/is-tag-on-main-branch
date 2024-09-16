@@ -63,9 +63,11 @@ runs:
           echo "The tag appears in the list of reachable tags"
           echo "reachable=true" >> $GITHUB_OUTPUT
         else
-          echo "::error::The tag does not appear to be reachable by from $defaultBranch."
           echo "reachable=false" >> $GITHUB_OUTPUT
           if [ "$errorIfNotReachable" == "true" ]; then
+            echo "::error::The tag does not appear to be reachable from $defaultBranch."
             exit 1
+          else
+            echo "::warning::The tag does not appear to be reachable from $defaultBranch."    
           fi
         fi
